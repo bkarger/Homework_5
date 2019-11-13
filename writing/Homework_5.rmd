@@ -1,5 +1,46 @@
 ---
-title: "Homework_5"
-output: pdf_document
+title: "Homework 5"
+output:
+  html_document:
+    df_print: paged
 ---
+Loading of necessary libraries.
+```{r, message=FALSE, warning=FALSE, error=FALSE}
+library(tidyverse)
+library(rmarkdown)
+library(lubridate)
+library(tigris)
+library(sf)
+library(tidyverse)
+options(tigris_class = "sf")
+options(tigris_use_cache = TRUE)
+```
+Loading and cleaning of data. 
+```{r, message=FALSE, warning=FALSE, error=FALSE}
+homicides <- read_csv("../data/homicide_data.csv") %>% 
+  unite(col = "city_state", city, state, sep = ",") %>% 
+  mutate(reported_date = ymd(reported_date),
+         victim_first = str_to_sentence(victim_first),
+         victim_last = str_to_sentence(victim_last)) %>% 
+  filter(city_state == "Chicago,IL") %>% 
+  print()
+```
+Creation of map of Chicago,IL.  
+Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
+```{r, message=FALSE, warning=FALSE, error=FALSE, fig.height=10, fig.width=10}
+chicago <- tracts("IL", county = "Cook", cb = TRUE)
+
+cb <- core_based_statistical_areas(cb = TRUE)
+
+chix <- filter(cb, grepl("Chicago", NAME))
+
+chix1 <- chicago[chix,]
+ggplot(chix) + geom_sf() +
+  theme_dark()
+
+ggplot() +
+  geom_sf(data = chix, fill = NA, color = "red") +
+  geom_sf(data = chix1) 
+  
+```
 
