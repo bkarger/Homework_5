@@ -1,6 +1,7 @@
 ---
 title: "Homework 5"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 ---
@@ -27,7 +28,7 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
 ```
 Creation of map of Chicago,IL.  
 Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
-```{r, message=FALSE, warning=FALSE, error=FALSE, fig.height=10, fig.width=10}
+```{r, message=FALSE, warning=FALSE, error=FALSE, fig.height=7, fig.width=5}
 chicago <- tracts("IL", county = "Cook", cb = TRUE)
 
 cb <- core_based_statistical_areas(cb = TRUE)
@@ -35,12 +36,21 @@ cb <- core_based_statistical_areas(cb = TRUE)
 chix <- filter(cb, grepl("Chicago", NAME))
 
 chix1 <- chicago[chix,]
-ggplot(chix) + geom_sf() +
-  theme_dark()
 
 ggplot() +
   geom_sf(data = chix, fill = NA, color = "red") +
-  geom_sf(data = chix1) 
+  geom_sf(data = chix1) +
+  geom_sf(data = sf_homicides)
   
+```
+Creating an sf objet from cleaned homicide data.
+```{r, message=FALSE, warning=FALSE, error=FALSE}
+sf_homicides <- st_as_sf(x = homicides, coords = c("lat", "lon")) %>% 
+  st_set_crs(7634)
+
+sf_homicides %>% 
+  ggplot() +
+  geom_sf() +
+  geom_sf(data = chix, fill = NA, color = "red")
 ```
 
