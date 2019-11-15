@@ -13,6 +13,7 @@ library(lubridate)
 library(tigris)
 library(sf)
 library(tidyverse)
+library(forcats)
 options(tigris_class = "sf")
 options(tigris_use_cache = TRUE)
 ```
@@ -22,7 +23,8 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
   unite(col = "city_state", city, state, sep = ",") %>% 
   mutate(reported_date = ymd(reported_date),
          victim_first = str_to_sentence(victim_first),
-         victim_last = str_to_sentence(victim_last)) %>% 
+         victim_last = str_to_sentence(victim_last),
+         solved = disposition == "Closed by arrest") %>% 
   filter(city_state == "Chicago,IL") %>% 
   print()
 ```
@@ -31,7 +33,7 @@ Concersion of df to sf object of homicides.
 Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
 ```{r, message=FALSE, warning=FALSE, error=FALSE}
 sf_homicides <- st_as_sf(x = homicides, coords = c("lon", "lat")) %>% 
-  st_set_crs(4269)
+  st_set_crs(4269) 
 
 chicago <- tracts("IL", county = "Cook", cb = TRUE)
 
@@ -44,6 +46,7 @@ chix1 <- chicago[chix,]
 ggplot() +
   geom_sf(data = chix1) +
   geom_sf(data = sf_homicides, alpha = 0.4) +
-  facet_wrap("victim_race")
+  facet_wrap("disposition") +
+  theme_dark()
 ```
 
