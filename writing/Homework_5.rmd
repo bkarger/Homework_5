@@ -27,8 +27,12 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
   print()
 ```
 Creation of map of Chicago,IL.  
+Concersion of df to sf object of homicides.
 Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
-```{r, message=FALSE, warning=FALSE, error=FALSE, fig.height=7, fig.width=5}
+```{r, message=FALSE, warning=FALSE, error=FALSE}
+sf_homicides <- st_as_sf(x = homicides, coords = c("lon", "lat")) %>% 
+  st_set_crs(4269)
+
 chicago <- tracts("IL", county = "Cook", cb = TRUE)
 
 cb <- core_based_statistical_areas(cb = TRUE)
@@ -38,19 +42,8 @@ chix <- filter(cb, grepl("Chicago", NAME))
 chix1 <- chicago[chix,]
 
 ggplot() +
-  geom_sf(data = chix, fill = NA, color = "red") +
   geom_sf(data = chix1) +
-  geom_sf(data = sf_homicides)
-  
-```
-Creating an sf objet from cleaned homicide data.
-```{r, message=FALSE, warning=FALSE, error=FALSE}
-sf_homicides <- st_as_sf(x = homicides, coords = c("lat", "lon")) %>% 
-  st_set_crs(7634)
-
-sf_homicides %>% 
-  ggplot() +
-  geom_sf() +
-  geom_sf(data = chix, fill = NA, color = "red")
+  geom_sf(data = sf_homicides, alpha = 0.4) +
+  facet_wrap("victim_race")
 ```
 
