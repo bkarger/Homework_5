@@ -1,9 +1,9 @@
 ---
 title: "Homework 5"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 Loading of necessary libraries.
 ```{r, message=FALSE, warning=FALSE, error=FALSE}
@@ -25,7 +25,7 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
          victim_first = str_to_sentence(victim_first),
          victim_last = str_to_sentence(victim_last),
          solved = disposition == "Closed by arrest") %>% 
-  filter(city_state == "Chicago,IL") %>% 
+  filter(city_state == "Chicago,IL") %>%
   print()
 ```
 Creation of map of Chicago,IL.  
@@ -37,16 +37,11 @@ sf_homicides <- st_as_sf(x = homicides, coords = c("lon", "lat")) %>%
 
 chicago <- tracts("IL", county = "Cook", cb = TRUE)
 
-cb <- core_based_statistical_areas(cb = TRUE)
-
-chix <- filter(cb, grepl("Chicago", NAME))
-
-chix1 <- chicago[chix,]
-
 ggplot() +
-  geom_sf(data = chix1) +
+  geom_sf(data = chicago) +
   geom_sf(data = sf_homicides, alpha = 0.4) +
-  facet_wrap("disposition") +
-  theme_dark()
+  facet_wrap("solved") +
+  theme_dark() +
+  ggtitle("Chicago Homicide incidents", subtitle = "Faceted by solved (TRUE or FALSE)")
 ```
 
