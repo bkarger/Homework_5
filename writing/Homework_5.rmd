@@ -24,7 +24,9 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
   mutate(reported_date = ymd(reported_date),
          victim_first = str_to_sentence(victim_first),
          victim_last = str_to_sentence(victim_last),
-         solved = disposition == "Closed by arrest") %>% 
+         disposition = str_to_lower(disposition),
+         disposition = str_replace(disposition, "closed without arrest", "no arrest"),
+         disposition = str_replace(disposition, "open/no arrest", "no arrest")) %>% 
   filter(city_state == "Chicago,IL") %>%
   print()
 ```
@@ -40,8 +42,8 @@ chicago <- tracts("IL", county = "Cook", cb = TRUE)
 ggplot() +
   geom_sf(data = chicago) +
   geom_sf(data = sf_homicides, alpha = 0.4) +
-  facet_wrap("solved") +
-  theme_dark() +
-  ggtitle("Chicago Homicide incidents", subtitle = "Faceted by solved (TRUE or FALSE)")
+  facet_wrap("disposition") +
+  theme_void() +
+  ggtitle("Chicago Homicide incidents", subtitle = "")
 ```
 
