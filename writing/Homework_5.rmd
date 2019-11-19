@@ -1,9 +1,9 @@
 ---
 title: "Homework 5"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 Loading of necessary libraries.
 ```{r, message=FALSE, warning=FALSE, error=FALSE}
@@ -34,7 +34,7 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
 Creation of map of Chicago,IL.  
 Concersion of df to sf object of homicides.
 Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
-```{r, message=FALSE, warning=FALSE, error=FALSE}
+```{r, message=FALSE, warning=FALSE, error=FALSE, fig.width=8, fig.height=5}
 homicides$victim_race <- as.factor(homicides$victim_race) 
 
 sf_homicides <- st_as_sf(x = homicides, coords = c("lon", "lat")) %>% 
@@ -42,14 +42,13 @@ sf_homicides <- st_as_sf(x = homicides, coords = c("lon", "lat")) %>%
 
 chicago <- tracts("IL", county = "Cook", cb = TRUE)
 
-
-
 ggplot() +
   geom_sf(data = chicago) +
-  geom_sf(data = sf_homicides, alpha = 0.4, aes(color = fct_lump(victim_race, n = 3))) +
+  geom_sf(data = sf_homicides, alpha = 0.4, 
+          aes(color = fct_lump(victim_race, n = 3))) +
   facet_wrap("disposition") +
   ggtitle("Chicago Homicide incidents", subtitle = "") +
-  theme(plot.background = element_rect(fill = "black")) +
-  theme_void()
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black")) 
 ```
 
