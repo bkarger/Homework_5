@@ -33,7 +33,7 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
 Creation of map of Chicago,IL.  
 Concersion of df to sf object of homicides.
 Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
-```{r, message=FALSE, warning=FALSE, error=FALSE, fig.width=8, fig.height=8}
+```{r, message=FALSE, warning=FALSE, error=FALSE}
 homicides$victim_race <- as.factor(homicides$victim_race) 
 
 sf_homicides <- st_as_sf(x = homicides, coords = c("lon", "lat")) %>% 
@@ -50,7 +50,7 @@ ggplot() +
   ggtitle("Chicago Homicide incidents from 2007-2009", subtitle = "Murders separated by successful arrest or not") +
   theme_void() +
   theme(panel.background = element_rect(fill = "black"),
-        plot.background = element_rect(fill = 'grey'),
+        plot.background = element_rect(fill = "grey"),
         legend.title=element_blank()) 
 ```
 
