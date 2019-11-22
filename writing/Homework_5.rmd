@@ -1,5 +1,6 @@
 ---
 title: "Homework 5"
+author: "Burton Karger"
 output:
   pdf_document: default
   html_document:
@@ -31,7 +32,7 @@ homicides <- read_csv("../data/homicide_data.csv") %>%
   print()
 ```
 Creation of map of Chicago,IL.  
-Concersion of df to sf object of homicides.
+Conversion of df to sf object of homicides.  
 Thanks Kyle! https://walkerke.github.io/2017/05/tigris-metros/  
 ```{r, message=FALSE, warning=FALSE, error=FALSE}
 homicides$victim_race <- as.factor(homicides$victim_race) 
@@ -47,7 +48,8 @@ ggplot() +
           aes(color = fct_lump(victim_race, n = 3))) +
   facet_wrap("disposition", strip.position = c("bottom")) +
   scale_color_viridis_d() +
-  ggtitle("Chicago Homicide incidents from 2007-2009", subtitle = "Murders separated by successful arrest or not") +
+  ggtitle("Chicago Homicide incidents from 2007-2009", 
+          subtitle = "Murders separated by successful arrest or no arrest") +
   theme_void() +
   theme(panel.background = element_rect(fill = "black"),
         plot.background = element_rect(fill = "grey"),
